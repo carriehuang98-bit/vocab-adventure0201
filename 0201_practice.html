@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0201 單字大冒險第一章</title>
+    <style>
+        :root {
+            --cute-pink: #ffafcc;
+            --cute-blue: #a2d2ff;
+            --cute-yellow: #fff2cc;
+            --cute-purple: #cdb4db;
+            --dark-pink: #ff4d6d;
+            --deep-pink: #c9184a;
+            --ocean-blue: #0077b6;
+            --deep-blue: #023e8a;
+            --correct-green: #2d6a4f;
+            --bg-correct: #d8f3dc;
+            --wrong-red: #ff758f;
+            --tab-inactive-text: #6b5b95;
+            --accent-green: #20bf6b;
+            --deep-green: #10ac84;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(-1deg); }
+        }
+
+        @keyframes character-bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Microsoft JhengHei', cursive, sans-serif;
+            background-color: #fdf0f0;
+            background-image: radial-gradient(#ffcad4 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #444;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 98%;
+            max-width: 1400px;
+            background: #ffffff;
+            border: 8px solid var(--cute-pink);
+            border-radius: 50px;
+            padding: 40px;
+            box-shadow: 0 15px 0px var(--cute-pink), 0 20px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* 標題與冒險角色樣式 */
+        .adventure-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .adventure-figure {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: character-bounce 3s ease-in-out infinite;
+        }
+
+        .figure-explorer { animation-delay: 0s; }
+        .figure-owl { animation-delay: 0.5s; }
+
+        h1 {
+            text-align: center;
+            font-size: 3.5rem;
+            color: var(--dark-pink);
+            margin: 0;
+            animation: floating 4s ease-in-out infinite;
+            text-shadow: 4px 4px 0px var(--cute-yellow);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-bg-glow {
+            position: absolute;
+            width: 400px;
+            height: 80px;
+            background: rgba(255, 242, 204, 0.6);
+            filter: blur(30px);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .tab-menu {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            padding-bottom: 15px;
+            border-bottom: 4px dotted var(--cute-pink);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            border: 2px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--tab-inactive-text);
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 0 #ccc;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 130px;
+        }
+
+        .tab-btn.active {
+            background: var(--dark-pink);
+            color: #ffffff;
+            border-color: var(--deep-pink);
+            box-shadow: 0 8px 0 var(--deep-pink);
+            transform: translateY(-4px);
+        }
+
+        .info-bar {
+            display: flex;
+            gap: 15px;
+            background: var(--cute-yellow);
+            padding: 20px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            border: 3px dashed #f9dcc4;
+        }
+
+        .info-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 3px solid white;
+            border-radius: 15px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .score-tag {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: white;
+            background: var(--dark-pink);
+            padding: 8px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 0 #c9184a;
+        }
+
+        .best-tag {
+            font-size: 0.9rem;
+            background: var(--cute-purple);
+            color: #5a189a;
+            padding: 4px 12px;
+            border-radius: 10px;
+            margin-left: 10px;
+            border: 1px solid #9d4edd;
+        }
+
+        /* 通用卡片樣式 */
+        .q-item { 
+            background: #fff; padding: 25px; border-radius: 30px; border: 3px solid #eee; margin-bottom: 20px;
+            font-size: 1.3rem; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .option-label:hover { background: #f0f0f0; }
+        .option-label input[type="radio"] { transform: scale(1.3); }
+
+        /* 第二關樣式 */
+        #q2-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .matching-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .matching-pair-card {
+            background: #fff;
+            padding: 10px;
+            border-radius: 25px;
+            border: 3px solid #f0f0f0;
+            position: relative;
+        }
+
+        .drop-zone {
+            width: 100%;
+            min-height: 80px;
+            border: 4px dashed #e0e0e0;
+            border-radius: 20px;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            gap: 10px;
+            position: relative;
+        }
+
+        .drop-zone.correct { background: var(--bg-correct); border-color: var(--correct-green); }
+        .drop-zone.wrong { background: #ffe5ec; border-color: var(--wrong-red); }
+
+        .embedded-ch {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            padding: 8px 15px;
+            border-radius: 15px;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            border: 2px solid #fff;
+        }
+
+        .sticky-library {
+            position: sticky;
+            top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 35px;
+            border: 6px solid var(--cute-blue);
+            box-shadow: 0 10px 0 var(--cute-blue);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .lib-title {
+            text-align: center;
+            font-weight: 900;
+            color: var(--ocean-blue);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .drag-item {
+            background: var(--deep-blue);
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 15px;
+            cursor: grab;
+            font-weight: 900;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 0 #002855;
+            transition: 0.2s;
+            border: 2px solid rgba(255,255,255,0.4);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin: 5px;
+            display: inline-block;
+        }
+
+        /* 拼字佈局 */
+        #q3-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .q-item-spelling {
+            background: #fff;
+            padding: 15px;
+            border-radius: 25px;
+            border: 4px solid #f0f0f0;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .spelling-main-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .spelling-label {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spelling-label span.num {
+            background: var(--cute-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .s-ans {
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+            background: #fcfcfc;
+            color: var(--deep-blue);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .s-ans:focus {
+            border-color: var(--cute-pink);
+            background: #fff;
+            box-shadow: 0 0 10px rgba(255, 175, 204, 0.4);
+        }
+
+        .feedback-hint {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--deep-pink);
+            background: #fff0f3;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--wrong-red);
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .reward-badge {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white; border: 10px solid #ffb703;
+            border-radius: 50px; padding: 40px; text-align: center;
+            z-index: 1000; box-shadow: 0 0 100px rgba(0,0,0,0.3);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-section-submit {
+            display: block; margin: 40px auto; padding: 15px 50px;
+            background: #ffb703; color: white; border: none;
+            border-radius: 30px; font-size: 1.4rem; font-weight: 900;
+            cursor: pointer; box-shadow: 0 8px 0 #fb8500;
+        }
+
+        .btn-reset { 
+            padding: 10px 22px; border-radius: 20px; 
+            background: linear-gradient(135deg, var(--accent-green), var(--deep-green));
+            color: white; border: none; cursor: pointer; font-weight: 900;
+            box-shadow: 0 4px 0 var(--deep-green); display: flex; align-items: center; gap: 8px;
+        }
+
+        #final-report-card {
+            text-align: center; padding: 40px; border-radius: 40px; border: 8px solid #ffd166; background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="reward-badge" id="success-badge">
+    <div style="font-size: 5rem;">🏆</div>
+    <h2>全對了！</h2>
+    <p>太棒了，你是單字冒險王！</p>
+    <button class="btn-reset" style="margin: 20px auto;" onclick="closeBadge()">收下勳章</button>
+</div>
+
+<div class="container">
+    <header class="adventure-header">
+        <div class="header-bg-glow"></div>
+        <div class="adventure-figure figure-explorer">
+            <!-- 小探險家圖示 -->
+            <svg viewBox="0 0 100 100" width="80">
+                <circle cx="50" cy="40" r="30" fill="#f9dcc4" />
+                <rect x="25" y="20" width="50" height="15" rx="5" fill="#f48c06" />
+                <rect x="20" y="30" width="60" height="5" rx="2" fill="#e85d04" />
+                <circle cx="40" cy="40" r="3" fill="#333" />
+                <circle cx="60" cy="40" r="3" fill="#333" />
+                <path d="M 45 55 Q 50 60 55 55" stroke="#333" stroke-width="2" fill="none" />
+                <rect x="30" y="65" width="40" height="30" rx="10" fill="#606c38" />
+                <rect x="35" y="70" width="30" height="20" rx="5" fill="#283618" opacity="0.3" />
+            </svg>
+        </div>
+        
+        <h1>單字大冒險第一章</h1>
+        
+        <div class="adventure-figure figure-owl">
+            <!-- 貓頭鷹導師圖示 -->
+            <svg viewBox="0 0 100 100" width="80">
+                <ellipse cx="50" cy="55" rx="35" ry="40" fill="#6d597a" />
+                <circle cx="35" cy="45" r="12" fill="white" />
+                <circle cx="65" cy="45" r="12" fill="white" />
+                <circle cx="35" cy="45" r="5" fill="#333" />
+                <circle cx="65" cy="45" r="5" fill="#333" />
+                <path d="M 45 55 L 50 65 L 55 55 Z" fill="#f4a261" />
+                <rect x="20" y="25" width="20" height="5" rx="2" fill="#333" transform="rotate(-10 20 25)" />
+                <rect x="60" y="25" width="20" height="5" rx="2" fill="#333" transform="rotate(10 80 25)" />
+                <path d="M 15 55 Q 5 70 15 85" fill="none" stroke="#6d597a" stroke-width="8" stroke-linecap="round" />
+                <path d="M 85 55 Q 95 70 85 85" fill="none" stroke="#6d597a" stroke-width="8" stroke-linecap="round" />
+            </svg>
+        </div>
+    </header>
+
+    <div class="info-bar">
+        <input type="text" id="className" placeholder="📍 你的班級">
+        <input type="text" id="seatNum" placeholder="🔢 你的座號">
+        <input type="text" id="studentName" placeholder="👤 你的姓名">
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" id="tab-btn-1" onclick="showTab(1)">❓ 第一關<br>三選一挑戰</button>
+        <button class="tab-btn" id="tab-btn-2" onclick="showTab(2)">🍬 第二關<br>配對大師</button>
+        <button class="tab-btn" id="tab-btn-3" onclick="showTab(3)">✍️ 第三關<br>單字拼拼樂</button>
+        <button class="tab-btn" id="tab-btn-4" onclick="showTab(4)">📖 第四關<br>小小翻譯官</button>
+        <button class="tab-btn" id="tab-btn-5" onclick="showTab(5)">🏆 最後<br>結算成績</button>
+    </div>
+
+    <!-- 第一關：三選一挑戰 -->
+    <div id="tab1" class="tab-content active">
+        <div class="section-header">
+            <div>
+                <span class="score-tag" id="score1">選擇正確單字：0 / 12</span>
+                <span class="best-tag" id="best1">最高紀錄：0</span>
+            </div>
+            <button class="btn-reset" onclick="resetSection(1)">🔄 換一批題目</button>
+        </div>
+        <div id="q1-list"></div>
+        <button class="btn-section-submit" onclick="gradeSection(1)">🌈 檢查答案</button>
+    </div>
+
+    <!-- 第二關：配對大師 -->
+    <div id="tab2" class="tab-content">
+        <div class="section-header">
+            <div>
+                <span class="score-tag" id="score2">配對清單：0 / 12</span>
+                <span class="best-tag" id="best2">最高紀錄：0</span>
+            </div>
+            <button class="btn-reset" onclick="resetSection(2)">🔄 重新洗牌</button>
+        </div>
+        <div class="matching-wrapper">
+            <div id="q2-list"></div>
+            <div class="sticky-library">
+                <div class="lib-title">🔤 單字庫 (拖曳至左側)</div>
+                <div id="card-pool"></div>
+            </div>
+        </div>
+        <button class="btn-section-submit" onclick="gradeSection(2)">🌈 檢查我的配對</button>
+    </div>
+
+    <!-- 第三關：單字拼拼樂 -->
+    <div id="tab3" class="tab-content">
+        <div class="section-header">
+            <div>
+                <span class="score-tag" id="score3">拼出正確單字：0 / 12</span>
+                <span class="best-tag" id="best3">最高紀錄：0</span>
+            </div>
+            <button class="btn-reset" onclick="resetSection(3)">🔄 換一批題目</button>
+        </div>
+        <div id="q3-list"></div>
+        <button class="btn-section-submit" onclick="gradeSection(3)">🌈 檢查拼字</button>
+    </div>
+
+    <!-- 第四關：小小翻譯官 -->
+    <div id="tab4" class="tab-content">
+        <div class="section-header">
+            <div>
+                <span class="score-tag" id="score4">填空翻譯官：0 / 14</span>
+                <span class="best-tag" id="best4">最高紀錄：0</span>
+            </div>
+            <button class="btn-reset" onclick="resetSection(4)">🔄 換一批題目</button>
+        </div>
+        <div id="q4-list"></div>
+        <button class="btn-section-submit" onclick="gradeSection(4)">🌈 檢查文意</button>
+    </div>
+
+    <!-- 結算 -->
+    <div id="tab5" class="tab-content">
+        <div id="final-report-card">
+            <h2 style="font-size: 2.5rem; color: #ff8fa3;">🏆 冒險成果表 🏆</h2>
+            <p style="color: #666;">（系統會自動保存每一關你曾達到的最高分，總分 50 點）</p>
+            <div id="total-details" style="font-size: 1.4rem; line-height: 2; margin: 30px 0;">尚未結算...</div>
+            <button class="btn-section-submit" onclick="gradeAll()">✨ 結算最終分數 ✨</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fullVocab = [
+        {en: "fruit", ch: "水果"}, {en: "menu", ch: "菜單"}, {en: "papaya", ch: "木瓜"},
+        {en: "watermelon", ch: "西瓜"}, {en: "strawberry", ch: "草莓"}, {en: "guava", ch: "芭樂"},
+        {en: "grape", ch: "葡萄"}, {en: "thirsty", ch: "口渴的"}, {en: "get up", ch: "起床"},
+        {en: "teeth", ch: "牙齒"}, {en: "face", ch: "臉"}, {en: "exercise", ch: "運動"},
+        {en: "breakfast", ch: "早餐"}, {en: "bath", ch: "泡澡"}, {en: "homework", ch: "家庭作業"},
+        {en: "baseball", ch: "棒球"}, {en: "soccer", ch: "足球"}, {en: "video game", ch: "電玩"},
+        {en: "practice", ch: "練習"}, {en: "every", ch: "每一"}, {en: "team", ch: "隊伍"},
+        {en: "know", ch: "知道"}, {en: "player", ch: "選手"}, {en: "grade", ch: "成績"},
+        {en: "test", ch: "考試"}, {en: "study", ch: "研讀"}, {en: "either", ch: "也(否定)"},
+        {en: "must", ch: "必須"}, {en: "enjoy", ch: "享受"}, {en: "then", ch: "那麼"},
+        {en: "ticket", ch: "票"}, {en: "together", ch: "一起"}, {en: "how much", ch: "多少錢"},
+        {en: "hundred", ch: "百"}, {en: "dollar", ch: "元"}, {en: "badminton", ch: "羽毛球"},
+        {en: "tennis", ch: "網球"}, {en: "ask", ch: "問/要求"}, {en: "happen", ch: "發生"},
+        {en: "fast", ch: "快速的"}, {en: "move", ch: "移動"}, {en: "hit", ch: "擊/打"},
+        {en: "fun", ch: "樂趣"}, {en: "win", ch: "贏"}, {en: "lose", ch: "輸掉"},
+        {en: "side", ch: "邊"}, {en: "touch", ch: "碰觸"}, {en: "last", ch: "最後的"},
+        {en: "point", ch: "得分/點"}
+    ];
+
+    // 擴充至 40 題，降低重複率
+    const sentenceQuestions = [
+        {q: "I am very _______. Can I have some water?", a: "thirsty", options: ["thirsty", "hungry", "test"]},
+        {q: "Let's play _______ together at the park.", a: "badminton", options: ["badminton", "grade", "menu"]},
+        {q: "How many _______ do you have? I have one hundred.", a: "dollars", options: ["dollars", "tickets", "sides"]},
+        {q: "We need to _______ hard for the English test.", a: "study", options: ["study", "exercise", "happen"]},
+        {q: "Don't _______ the hot pot. It's dangerous!", a: "touch", options: ["touch", "move", "win"]},
+        {q: "I usually _______ at 6:30 every morning.", a: "get up", options: ["get up", "bath", "hit"]},
+        {q: "Who is your favorite basketball _______?", a: "player", options: ["player", "team", "hundred"]},
+        {q: "Eating _______ is good for your health.", a: "fruit", options: ["fruit", "video game", "dollar"]},
+        {q: "I like to play _______ with my friends.", a: "video games", options: ["video games", "homework", "faces"]},
+        {q: "The _______ for the movie is 250 dollars.", a: "ticket", options: ["ticket", "menu", "point"]},
+        {q: "Let's _______ together to win the game.", a: "practice", options: ["practice", "ask", "lose"]},
+        {q: "I have a lot of _______ today.", a: "homework", options: ["homework", "hundred", "side"]},
+        {q: "Does it _______ every day? No, it doesn't.", a: "happen", options: ["happen", "move", "hit"]},
+        {q: "How _______ can you run? I am very fast.", a: "fast", options: ["fast", "fun", "last"]},
+        {q: "I eat _______ for health, like apples and bananas.", a: "fruit", options: ["fruit", "teeth", "face"]},
+        {q: "Wait, let me look at the _______ to order food.", a: "menu", options: ["menu", "test", "grade"]},
+        {q: "The _______ is orange inside and has many seeds.", a: "papaya", options: ["papaya", "watermelon", "guava"]},
+        {q: "It's summer! Let's eat some cold _______.", a: "watermelon", options: ["watermelon", "strawberry", "grape"]},
+        {q: "This _______ is red and very sweet.", a: "strawberry", options: ["strawberry", "papaya", "guava"]},
+        {q: "Taiwanese _______ is green and full of Vitamin C.", a: "guava", options: ["guava", "grape", "watermelon"]},
+        {q: "My mom bought some purple _______ from the market.", a: "grapes", options: ["grapes", "strawberries", "papayas"]},
+        {q: "You should brush your _______ twice a day.", a: "teeth", options: ["teeth", "face", "move"]},
+        {q: "Please wash your _______ before dinner.", a: "face", options: ["face", "bath", "teeth"]},
+        {q: "Doing _______ every day makes you strong.", a: "exercise", options: ["exercise", "homework", "practice"]},
+        {q: "What did you have for _______ this morning?", a: "breakfast", options: ["breakfast", "menu", "bath"]},
+        {q: "I like taking a warm _______ in winter.", a: "bath", options: ["bath", "get up", "touch"]},
+        {q: "We are on the same _______, so let's help each other.", a: "team", options: ["team", "player", "grade"]},
+        {q: "I don't _______ the answer to this question.", a: "know", options: ["know", "ask", "hit"]},
+        {q: "His math _______ is 95. He is very happy!", a: "grade", options: ["grade", "ticket", "point"]},
+        {q: "I can't go out. I have a big _______ tomorrow.", a: "test", options: ["test", "fun", "side"]},
+        {q: "I don't like soccer, and my brother doesn't _______.", a: "either", options: ["either", "then", "must"]},
+        {q: "You _______ follow the rules in school.", a: "must", options: ["must", "enjoy", "know"]},
+        {q: "I really _______ playing tennis with you.", a: "enjoy", options: ["enjoy", "win", "lose"]},
+        {q: "First, eat your dinner; _______ you can have cake.", a: "then", options: ["then", "every", "must"]},
+        {q: "We should go to the library _______.", a: "together", options: ["together", "either", "last"]},
+        {q: "I have five _______ in my pocket.", a: "hundred", options: ["hundred", "dollar", "point"]},
+        {q: "Can I _______ you a question?", a: "ask", options: ["ask", "know", "happen"]},
+        {q: "Don't _______ the desk; it's broken.", a: "move", options: ["move", "hit", "win"]},
+        {q: "The blue team won the _______.", a: "point", options: ["point", "grade", "ticket"]},
+        {q: "This is my _______ time playing this game.", a: "last", options: ["last", "every", "fast"]}
+    ];
+
+    const ITEMS_PER_SEC = 12;
+    const ITEMS_SEC4 = 14;
+    const bestScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+    function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+    
+    function showTab(num) {
+        document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === num-1));
+        document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === num-1));
+    }
+
+    function initApp() { [1,2,3,4].forEach(resetSection); }
+
+    function handleDragStart(e) { e.dataTransfer.setData("id", e.target.id); }
+    function handleDrop(e) {
+        e.preventDefault();
+        const id = e.dataTransfer.getData("id");
+        const card = document.getElementById(id);
+        const target = e.target.closest('.drop-zone');
+        if (target) {
+            const existing = target.querySelector('.drag-item');
+            if (existing) document.getElementById('card-pool').appendChild(existing);
+            target.appendChild(card);
+            target.classList.remove('correct', 'wrong');
+            const hint = target.parentNode.querySelector('.feedback-hint');
+            if (hint) hint.style.display = 'none';
+        }
+    }
+
+    function resetSection(secId) {
+        const container = document.getElementById(`q${secId}-list`);
+        container.innerHTML = "";
+        
+        const count = (secId === 4 ? ITEMS_SEC4 : ITEMS_PER_SEC);
+        const labelText = (secId === 2 ? "配對清單" : secId === 3 ? "拼出正確單字" : secId === 4 ? "填空翻譯官" : "選擇正確單字");
+        document.getElementById(`score${secId}`).innerText = `${labelText}：0 / ${count}`;
+
+        if (secId === 1) {
+            const subPool = shuffle([...fullVocab]).slice(0, count);
+            subPool.forEach((item, i) => {
+                let others = shuffle(fullVocab.filter(x => x.en !== item.en)).slice(0, 2);
+                let choices = shuffle([item.en, others[0].en, others[1].en]);
+                container.innerHTML += `
+                <div class="q-item">
+                    ${i+1}. 「${item.ch}」的英文是什麼？<br>
+                    <div class="options-grid">
+                        ${choices.map(c => `<label class="option-label"><input type="radio" name="r1_${i}" value="${c}" data-correct="${item.en}"> ${c}</label>`).join('')}
+                    </div>
+                    <div class="feedback-hint" id="hint-1-${i}">💡 正確答案：${item.en}</div>
+                </div>`;
+            });
+        } else if (secId === 2) {
+            const subPool = shuffle([...fullVocab]).slice(12, 12 + count);
+            const pool = document.getElementById('card-pool');
+            pool.innerHTML = "";
+            subPool.forEach((item, i) => {
+                container.innerHTML += `
+                <div class="matching-pair-card">
+                    <div class="drop-zone" data-correct="${item.en}" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+                        <div class="embedded-ch">${item.ch}</div>
+                    </div>
+                    <div class="feedback-hint" id="hint-2-${i}">💡 答案：${item.en}</div>
+                </div>`;
+                const eCard = document.createElement('div');
+                eCard.className = "drag-item"; eCard.draggable = true; eCard.id = `en-card-${i}`;
+                eCard.innerText = item.en; eCard.ondragstart = handleDragStart;
+                eCard.onclick = () => { if(eCard.parentNode.classList.contains('drop-zone')) pool.appendChild(eCard); };
+                pool.appendChild(eCard);
+            });
+        } else if (secId === 3) {
+            const subPool = shuffle([...fullVocab]).slice(24, 24 + count);
+            subPool.forEach((item, i) => {
+                container.innerHTML += `
+                <div class="q-item-spelling">
+                    <div class="spelling-main-row">
+                        <div class="spelling-label"><span class="num">${i+1}</span> ${item.ch}</div>
+                        <input type="text" class="s-ans" id="input-3-${i}" data-correct="${item.en}" placeholder="...">
+                    </div>
+                    <div class="feedback-hint" id="hint-3-${i}">💡 正確拼法：${item.en}</div>
+                </div>`;
+            });
+        } else if (secId === 4) {
+            shuffle([...sentenceQuestions]).slice(0, count).forEach((item, i) => {
+                container.innerHTML += `
+                <div class="q-item">
+                    ${i+1}. ${item.q}<br>
+                    <div class="options-grid">
+                        ${item.options.map(c => `<label class="option-label"><input type="radio" name="r4_${i}" value="${c}" data-correct="${item.a}"> ${c}</label>`).join('')}
+                    </div>
+                    <div class="feedback-hint" id="hint-4-${i}">💡 正確答案：${item.a}</div>
+                </div>`;
+            });
+        }
+    }
+
+    function gradeSection(secId) {
+        let s = 0;
+        const totalPossible = (secId === 4 ? ITEMS_SEC4 : ITEMS_PER_SEC);
+        
+        if (secId === 2) {
+            document.querySelectorAll('#q2-list .matching-pair-card').forEach((card, idx) => {
+                const z = card.querySelector('.drop-zone');
+                const hint = card.querySelector('.feedback-hint');
+                const dragItem = z.querySelector('.drag-item');
+                z.classList.remove('correct', 'wrong');
+                if (dragItem && dragItem.innerText === z.dataset.correct) {
+                    s++; z.classList.add('correct'); hint.style.display = 'none';
+                } else {
+                    z.classList.add('wrong'); hint.style.display = 'block';
+                }
+            });
+        } else if (secId === 3) {
+            document.querySelectorAll('#q3-list .s-ans').forEach((input, idx) => {
+                const parent = input.closest('.q-item-spelling');
+                const hint = parent.querySelector('.feedback-hint');
+                const isCorrect = input.value.trim().toLowerCase() === input.dataset.correct.toLowerCase();
+                if (isCorrect) {
+                    s++; parent.style.borderColor = "var(--correct-green)"; parent.style.background = "var(--bg-correct)"; hint.style.display = "none";
+                } else {
+                    parent.style.borderColor = "var(--wrong-red)"; parent.style.background = "#ffe5ec"; hint.style.display = "block";
+                }
+            });
+        } else {
+            document.querySelectorAll(`#tab${secId} .q-item`).forEach((item, i) => {
+                const sel = item.querySelector(`input[name="r${secId}_${i}"]:checked`);
+                const hint = item.querySelector('.feedback-hint');
+                const isCorrect = (sel && sel.value === sel.dataset.correct);
+                if (isCorrect) {
+                    s++; item.style.borderColor = "var(--correct-green)"; item.style.background = "var(--bg-correct)"; hint.style.display = "none";
+                } else {
+                    item.style.borderColor = "var(--wrong-red)"; item.style.background = "#ffe5ec"; hint.style.display = "block";
+                }
+            });
+        }
+
+        if (s > bestScores[secId]) {
+            bestScores[secId] = s;
+            document.getElementById(`best${secId}`).innerText = `最高紀錄：${s}`;
+            document.getElementById(`best${secId}`).style.transform = "scale(1.2)";
+            setTimeout(() => document.getElementById(`best${secId}`).style.transform = "scale(1)", 300);
+        }
+
+        const labelMap = { 1: "選擇", 2: "配對", 3: "拼字", 4: "翻譯" };
+        document.getElementById(`score${secId}`).innerText = `🎯 ${labelMap[secId]}得分：${s} / ${totalPossible}`;
+        if (s === totalPossible) showBadge();
+    }
+
+    function showBadge() { document.getElementById('success-badge').style.display = 'block'; }
+    function closeBadge() { document.getElementById('success-badge').style.display = 'none'; }
+    
+    function gradeAll() {
+        const totalBest = bestScores[1] + bestScores[2] + bestScores[3] + bestScores[4];
+        const totalT = 50; 
+        document.getElementById('total-details').innerHTML = `
+            <div style="background:var(--cute-yellow); padding:20px; border-radius:20px; margin-bottom:20px; text-align: left;">
+                <p>📊 第一關最高：${bestScores[1]} / 12</p>
+                <p>📊 第二關最高：${bestScores[2]} / 12</p>
+                <p>📊 第三關最高：${bestScores[3]} / 12</p>
+                <p>📊 第四關最高：${bestScores[4]} / 14</p>
+            </div>
+            <div style="padding: 20px; border: 4px solid var(--dark-pink); border-radius: 30px; background: #fffafb;">
+                <span style="font-size: 1.2rem; color: #666;">累積最高總得分</span><br>
+                <strong style="font-size:4rem; color:var(--dark-pink);">${totalBest} <span style="font-size: 1.5rem; color:#aaa;">/ ${totalT}</span></strong>
+            </div>
+        `;
+    }
+    window.onload = initApp;
+</script>
+</body>
+</html>
